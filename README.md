@@ -17,11 +17,8 @@ The visualization will provoke the question of whether one is maximizing his nut
 
 ### Explanation of D3 Feature Utilization 
 We will use D3 to enter selections to retrieve data like each cereal's calories and the select nutrients from the cereal.csv file to our scatterplot.
-
 When the user wants to see a different nutrient, say changing from protein(yay) to carbs(yuck), they can press a button corresponding to the nutrient.
-
 We will then use exit selection to remove the previous nutritional data and use enter selection to enter the new select nutrients, thus updating our scatterplot.
-
 The dots representing each cereal will shift their location after pressing a new nutrient button, creating our transitions.
 
 The user interacts with the plot by hovering over each dot, which will display a pop-up detailing information about the cereal brand.
