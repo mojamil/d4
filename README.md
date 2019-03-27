@@ -15,4 +15,7 @@ To interact with the visualization, the user can press different buttons to view
 #### Question(s)
 The visualization will provoke the question of whether one is maximizing his nutrient intake from cereal.
 
+## Sketch of Envisioned Visualization
+![Diagram](https://i.imgur.com/e0Zbpcw.png)
+
 
