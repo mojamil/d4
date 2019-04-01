@@ -27,4 +27,22 @@ Our project is the most similar to the scatterplots in the gallery, like the sca
 ## Sketch of Envisioned Visualization
 ![Diagram](https://i.imgur.com/e0Zbpcw.png)
 
+## How To Launch
+1. Clone the repo
+    * ssh - `git@github.com:Zer0-M/d4.git`
+    * https - `https://github.com/Zer0-M/d4.git`
+2. `$ cd d4`
+   * Move to root of repo
+3. `pip install -r requirements.txt`
+    * Install the requirements for d4  
+4.  `$ . location_of_venv/venv_name/bin/activate`
+    * Activate your virtual environment
+5. `$ python app.py`
+    * Start d4's project
+6. Open up your browser and type [127.0.0.1:5000](http://127.0.0.1:5000/)
+    * Load project in browser
+
+
+## LAUNCH CODES 
+
 
