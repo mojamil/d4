@@ -1,9 +1,10 @@
 var margin = {top: 20, right: 20, bottom: 30, left: 100},
     width = 1000 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
-
+var activey="Protein"
+var activex="Calories"
 // setup x
-var xValue = function(d) { return d.calories;}, // x value of given data
+var xValue = function(d) { return d[activex];}, // x value of given data
     xScale = d3.scaleLinear().range([0, width]),
     //mapping value to x axis
     xMap = function(d) { return xScale(xValue(d));},
@@ -11,7 +12,7 @@ var xValue = function(d) { return d.calories;}, // x value of given data
 //alert(xScale(1))
 
 // setup y
-var yValue = function(d) { return d.protein;}, // y value of given data
+var yValue = function(d) { return d[activey];}, // y value of given data
     yScale = d3.scaleLinear().range([height, 0]),
     yMap = function(d) { return yScale(yValue(d));},
     yAxis = d3.axisLeft(yScale);
@@ -22,9 +23,8 @@ var svg = d3.select("body").append("svg")
    .attr("height", height + margin.top + margin.bottom)
    .append("g")
    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-var activey="Protein"
-var activex="Calories"
-d3.csv('/static/data/cereal.csv')
+
+/*d3.csv('/static/data/cereal.csv')
 .then(function(data){
   var fields=Object.keys(data[0]).slice(3,11)
 
@@ -38,7 +38,7 @@ d3.csv('/static/data/cereal.csv')
       activey=fields[i]
     });
   }
-});
+});*/
 
 d3.csv('/static/data/cereal.csv')
   .then(function(data){
