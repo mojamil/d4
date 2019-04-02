@@ -22,8 +22,8 @@ var svg = d3.select("body").append("svg")
    .attr("height", height + margin.top + margin.bottom)
    .append("g")
    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-var activey="protein"
-var activex="calories"
+var activey="Protein"
+var activex="Calories"
 d3.csv('/static/data/cereal.csv')
 .then(function(data){
   var fields=Object.keys(data[0]).slice(3,11)
