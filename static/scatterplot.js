@@ -22,16 +22,33 @@ var svg = d3.select("body").append("svg")
    .attr("height", height + margin.top + margin.bottom)
    .append("g")
    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var activey="protein"
+var activex="calories"
+d3.csv('/static/data/cereal.csv')
+.then(function(data){
+  var fields=Object.keys(data[0]).slice(3,11)
 
-d3.csv('./data/cereal.csv')
+  for (var i=0;i<fields.length;i++) {
+    document.getElementById(fields[i]+"x").addEventListener('click',(e)=>{
+      console.log(e)
+      activex=fields[i]
+    });
+    document.getElementById(fields[i]+"y").addEventListener('click',(e)=>{
+      console.log(e)
+      activey=fields[i]
+    });
+  }
+});
+
+d3.csv('/static/data/cereal.csv')
   .then(function(data){
     data.forEach(function(d) {
-    d.calories = +d.calories;
-    d.protein = +d.protein;
+    d[activex] = +d[activex];
+    d[activey] = +d[activey];
     //alert( d.calories )
 
   });
-
+  
     //edit domains
     xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
     yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue)+1])
@@ -71,3 +88,6 @@ d3.csv('./data/cereal.csv')
       .style("fill", "red")
 
   });
+function update(){
+  //Needs to be created
+}
