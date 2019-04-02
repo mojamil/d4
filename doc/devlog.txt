@@ -16,6 +16,13 @@ pd 6
 ==============================================================
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+mohammedJ -- 2019-04-02 1:12AM
+--------------------------------------------------------------
+- added flask app with template
+- Added buttons and event listener for changing data
+- Need to add an update chart method
+==============================================================
+
 rickyL -- 2019-03-26 11:17PM
 --------------------------------------------------------------
 - Added explanation of D3 features utilization to README.md
