@@ -25,7 +25,7 @@
     <h5>X-Axis</h5>
     {% for field in fields %}
         {% if field=="Calories" %}
-            <button id="{{field}}x" class="btn btn-outline-primary active">{{field}}</button>
+            <button id="{{field}}x" class="btn btn-outline-primary">{{field}}</button>
         {% else %}
             <button id="{{field}}x" class="btn btn-outline-primary">{{field}}</button>
         {% endif %}
@@ -35,7 +35,7 @@
     <h5>Y-Axis</h5>
     {% for field in fields %}
         {% if field=="Protein" %}
-            <button id="{{field}}y" class="btn btn-outline-primary active">{{field}}</button>
+            <button id="{{field}}y" class="btn btn-outline-primary">{{field}}</button>
         {% else %}
             <button id="{{field}}y" class="btn btn-outline-primary">{{field}}</button>
         {% endif %}

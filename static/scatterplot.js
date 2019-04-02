@@ -42,7 +42,7 @@ d3.csv('/static/data/cereal.csv')
   }(i))
   }
 });
-
+var colorScale = d3.scaleSequential().domain([1,81]).interpolator(d3.interpolateViridis);
 d3.csv('/static/data/cereal.csv')
   .then(function(data){
     data.forEach(function(d) {
@@ -90,7 +90,7 @@ d3.csv('/static/data/cereal.csv')
       .attr("r", 6)
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", "red")
+      .attr('fill',function (d,i) { return colorScale(i) })
 
   });
 function updatey(){
