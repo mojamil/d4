@@ -19,124 +19,152 @@ var yValue = function(d) { return d[activey];}, // y value of given data
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select("body").append("svg")
-   .attr("width", width + margin.left + margin.right)
-   .attr("height", height + margin.top + margin.bottom)
-   .append("g")
-   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Define the div for the tooltip
+var tooltip = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+
+var mouseover = function(d,i) {
+
+    tooltip.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+    tooltip.html("test")
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+
+};
+
+// A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+var mouseleave = function(d,i) {
+    tooltip
+	.transition()
+	.duration(200)
+	.style("opacity", 0)
+    svg.append("text").text("");
+}
+
 var fields=NaN
 d3.csv('/static/data/cereal.csv')
-.then(function(data){
-  fields=Object.keys(data[0]).slice(3,12)
-  for (var i=0;i<fields.length;i++) {
-    (function(i){
-    document.getElementById(fields[i]+"x").addEventListener('click',(e)=>{
-      console.log(e)
-      activex=fields[i]
-      updatex()
+    .then(function(data){
+	fields=Object.keys(data[0]).slice(3,12)
+	for (var i=0;i<fields.length;i++) {
+	    (function(i){
+		document.getElementById(fields[i]+"x").addEventListener('click',(e)=>{
+		    console.log(e)
+		    activex=fields[i]
+		    updatex()
+		});
+		document.getElementById(fields[i]+"y").addEventListener('click',(e)=>{
+		    console.log(e)
+		    activey=fields[i]
+		    updatey()
+		});
+	    }(i))
+	}
     });
-    document.getElementById(fields[i]+"y").addEventListener('click',(e)=>{
-      console.log(e)
-      activey=fields[i]
-      updatey()
-    });
-  }(i))
-  }
-});
 var colorScale = d3.scaleSequential().domain([1,81]).interpolator(d3.interpolateViridis);
 d3.csv('/static/data/cereal.csv')
-  .then(function(data){
-    data.forEach(function(d) {
-    d[activex] = +d[activex];
-    d[activey] = +d[activey];
-    //alert( d.calories )
+    .then(function(data){
+	data.forEach(function(d) {
+	    d[activex] = +d[activex];
+	    d[activey] = +d[activey];
+	    //alert( d.calories )
 
-  });
-  
-    //edit domains
-    xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
-    yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue)+1])
+	});
 
-  // x-axis
-  svg.append("g")
-      .attr("class", "x-axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+	//edit domains
+	xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
+	yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue)+1])
 
-  // add text to x-axis
-  svg.append("text")
-    .attr("class", "labelx")
-    .attr('id', 'xAxisLabel')
-    .attr("x", width)
-    .attr("y", height + margin.bottom)
-    .style("text-anchor", "end")
-    .text("Calories");
-  // y-axis
-  svg.append("g")
-      .attr("class", "y-axis")
-      .call(yAxis);
-  // add text to y-axis
-  svg.append("text")
-    .attr("class", "labely")
-    .attr('id', 'yAxisLabel')
-    .attr("x", -100)
-    .attr("y", 4)
-    .text("Protein (g)");
+	// x-axis
+	svg.append("g")
+	    .attr("class", "x-axis")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(xAxis);
 
-    //add circles
-    svg.selectAll(".dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 6)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .attr('fill',function (d,i) { return colorScale(i) })
+	// add text to x-axis
+	svg.append("text")
+	    .attr("class", "labelx")
+	    .attr('id', 'xAxisLabel')
+	    .attr("x", width)
+	    .attr("y", height + margin.bottom)
+	    .style("text-anchor", "end")
+	    .text("Calories");
+	// y-axis
+	svg.append("g")
+	    .attr("class", "y-axis")
+	    .call(yAxis);
+	// add text to y-axis
+	svg.append("text")
+	    .attr("class", "labely")
+	    .attr('id', 'yAxisLabel')
+	    .attr("x", -100)
+	    .attr("y", 4)
+	    .text("Protein (g)");
 
-  });
-function updatey(){
-  d3.csv('/static/data/cereal.csv')
-  .then(function(data){
-    data.forEach(function(d) {
-      d[activey] = +d[activey];
-      //alert( d.calories )
-  
+	//add circles
+	svg.selectAll(".dot")
+	    .data(data)
+	    .enter().append("circle")
+	    .attr("class", "dot")
+	    .attr("r", 6)
+	    .attr("cx", xMap)
+	    .attr("cy", yMap)
+	    .attr('fill',function (d,i) { return colorScale(i) })
+	    .on("mouseover", mouseover )
+	    .on("mouseleave", mouseleave );
+
     });
-  console.log(activey)
-  yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue)+1]);
-  d3.select('.y-axis') // redraw the yAxis
-  .transition().duration(1000)
-  .call(yAxis)
-  d3.select('#yAxisLabel')
-  .transition() // change the yAxisLabel
-  .text(activey)
-  d3.selectAll('circle') // move the circles
-      .transition().duration(1000)
-      .delay(function (d,i) { return i*100})
-        .attr('cy',yMap);
+function updatey(){
+    d3.csv('/static/data/cereal.csv')
+	.then(function(data){
+	    data.forEach(function(d) {
+		d[activey] = +d[activey];
+		//alert( d.calories )
 
-})
-  //Needs to be created
+	    });
+	    console.log(activey)
+	    yScale.domain([d3.min(data, yValue) - 1, d3.max(data, yValue)+1]);
+	    d3.select('.y-axis') // redraw the yAxis
+		.transition().duration(1000)
+		.call(yAxis)
+	    d3.select('#yAxisLabel')
+		.transition() // change the yAxisLabel
+		.text(activey)
+	    d3.selectAll('circle') // move the circles
+		.transition().duration(1000)
+		.delay(function (d,i) { return i*100})
+		.attr('cy',yMap);
+
+	})
+    //Needs to be created
 }
 function updatex(){
-  d3.csv('/static/data/cereal.csv')
-  .then(function(data){
-    data.forEach(function(d) {
-      d[activex] = +d[activex];
-      //alert( d.calories )
-  
-    });
-  xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
-  d3.select('.x-axis') // redraw the yAxis
-  .transition().duration(1000)
-  .call(xAxis)
-  d3.select('#xAxisLabel')
-  .transition() // change the yAxisLabel
-  .text(activex)
-  d3.selectAll('circle') // move the circles
-      .transition().duration(1000)
-      .delay(function (d,i) { return i*100})
-        .attr('cx',xMap);
+    d3.csv('/static/data/cereal.csv')
+	.then(function(data){
+	    data.forEach(function(d) {
+		d[activex] = +d[activex];
+		//alert( d.calories )
 
-})
-  //Needs to be created
+	    });
+	    xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
+	    d3.select('.x-axis') // redraw the yAxis
+		.transition().duration(1000)
+		.call(xAxis)
+	    d3.select('#xAxisLabel')
+		.transition() // change the yAxisLabel
+		.text(activex)
+	    d3.selectAll('circle') // move the circles
+		.transition().duration(1000)
+		.delay(function (d,i) { return i*100})
+		.attr('cx',xMap);
+
+	})
+    //Needs to be created
 }
