@@ -29,24 +29,25 @@ var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")				
     .style("opacity", 0);
 
+// show tooltip when mouse over dot
 var mouseover = function(d,i) {
 
     tooltip.transition()		
-                .duration(200)		
+                .duration(300)		
                 .style("opacity", .9);		
-    tooltip.html("test")
+    tooltip.html( d.name + " : (" + d[activex] + "," + d[activey] + ")" )
                 .style("left", (d3.event.pageX) + "px")		
-                .style("top", (d3.event.pageY - 28) + "px");	
+                .style("top", (d3.event.pageY - 30) + "px");	
 
 };
 
-// A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+// set opacity of tooltip to 0 when mouse not over dot
 var mouseleave = function(d,i) {
     tooltip
 	.transition()
-	.duration(200)
+	.duration(300)
 	.style("opacity", 0)
-    svg.append("text").text("");
+   
 }
 
 var fields=NaN
