@@ -3,6 +3,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 100},
     height = 500 - margin.top - margin.bottom;
 var activey="Protein"
 var activex="Calories"
+var jittered=false
 // setup x
 var xValue = function(d) { return d[activex];}, // x value of given data
     xScale = d3.scaleLinear().range([0, width]),
@@ -14,7 +15,7 @@ var xValue = function(d) { return d[activex];}, // x value of given data
 // setup y
 var yValue = function(d) { return d[activey];}, // y value of given data
     yScale = d3.scaleLinear().range([height, 0]),
-    yMap = function(d) { return yScale(yValue(d));},
+    yMap = function(d) { return yScale(yValue(d))},
     yAxis = d3.axisLeft(yScale);
 
 // add the graph canvas to the body of the webpage
@@ -68,7 +69,8 @@ d3.csv('/static/data/cereal.csv')
 		});
 	    }(i))
 	}
-    });
+	});
+document.getElementById("jb").addEventListener('change',jitter)
 var colorScale = d3.scaleSequential().domain([1,81]).interpolator(d3.interpolateViridis);
 d3.csv('/static/data/cereal.csv')
     .then(function(data){
@@ -108,20 +110,21 @@ d3.csv('/static/data/cereal.csv')
 	    .attr("x", -100)
 	    .attr("y", 4)
 	    .text("Protein (g)");
-
 	//add circles
-	svg.selectAll(".dot")
+	var bubbles=svg.selectAll(".dot")
 	    .data(data)
 	    .enter().append("circle")
 	    .attr("class", "dot")
 	    .attr("r", 6)
 	    .attr("cx", xMap)
 	    .attr("cy", yMap)
-	    .attr('fill',function (d,i) { return colorScale(i) })
+		.attr('fill',function (d,i) { return colorScale(i) })
+		.style('stroke','black')
+		.style('opacity',0.5)
 	    .on("mouseover", mouseover )
-	    .on("mouseleave", mouseleave );
+		.on("mouseleave", mouseleave );
+	});
 
-    });
 function updatey(){
     d3.csv('/static/data/cereal.csv')
 	.then(function(data){
@@ -168,4 +171,21 @@ function updatex(){
 
 	})
     //Needs to be created
+}
+function jitter(){
+	if(jittered){
+		xMap = function(d) { return xScale(xValue(d));},
+		yMap = function(d) { return yScale(yValue(d));}
+		jittered=false
+	}
+	else{
+		xMap = function(d) { return xScale(xValue(d))+Math.random()*25;},
+		yMap = function(d) { return yScale(yValue(d))+Math.random()*25;}
+		jittered=true
+	}
+	d3.selectAll('circle') // move the circles
+		.transition().duration(1000)
+		.delay(function (d,i) { return i*100})
+		.attr('cx',xMap)
+		.attr('cy',yMap);
 }

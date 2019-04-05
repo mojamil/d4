@@ -39,10 +39,16 @@
         {% else %}
             <button id="{{field}}y" class="btn btn-outline-primary">{{field}}</button>
         {% endif %}
-    {% endfor %}  
+    {% endfor %}
+    <br>
+    <br>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" name="Jitte" id="jb" value="checkedValue"><h6>Jitter Data to see individual data points</h6>
+      </label>
     </div>
+  </div>  
 
-    
     
     <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='scatterplot.js') }}" ></script>
