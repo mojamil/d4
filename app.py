@@ -8,6 +8,13 @@ def home():
     fields=fields[3:12]
     return render_template("home.html",fields=fields) 
 
+@app.route('/cereal')
+def cereal():
+    data=open("data/cereal.csv", "r")
+    fields=data.readline().split(",")
+    fields=fields[3:12]
+    return render_template("cereal.html")
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
