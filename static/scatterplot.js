@@ -71,7 +71,7 @@ d3.csv('/static/data/cereal.csv')
 	}
 	});
 document.getElementById("jb").addEventListener('change',jitter)
-//document.getElementById("Brand").addEventListerner('select',
+
 var colorScale = d3.scaleSequential().domain([1,81]).interpolator(d3.interpolateViridis);
 d3.csv('/static/data/cereal.csv')
     .then(function(data){
@@ -81,6 +81,11 @@ d3.csv('/static/data/cereal.csv')
 	    //alert( d.calories )
 
 	});
+	document.getElementById("Brand").addEventListener('change',function(e){
+	    selected=["explicitOriginalTarget"].label.substring(0,1);
+	    sarr=data.filter(data["mfr"]==selected)
+	    console.log(sarr);
+	})
 
 	//edit domains
 	xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
