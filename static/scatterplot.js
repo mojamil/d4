@@ -71,6 +71,7 @@ d3.csv('/static/data/cereal.csv')
 	}
 	});
 document.getElementById("jb").addEventListener('change',jitter)
+//document.getElementById("Brand").addEventListerner('select',
 var colorScale = d3.scaleSequential().domain([1,81]).interpolator(d3.interpolateViridis);
 d3.csv('/static/data/cereal.csv')
     .then(function(data){
@@ -120,7 +121,7 @@ d3.csv('/static/data/cereal.csv')
 	    .attr("cy", yMap)
 		.attr('fill',function (d,i) { return colorScale(i) })
 		.style('stroke','black')
-		.style('opacity',0.5)
+		.style('opacity',0.8)
 	    .on("mouseover", mouseover )
 		.on("mouseleave", mouseleave );
 	});
@@ -173,14 +174,14 @@ function updatex(){
     //Needs to be created
 }
 function jitter(){
-	if(jittered){
+	if(!this.checked){
 		xMap = function(d) { return xScale(xValue(d));},
 		yMap = function(d) { return yScale(yValue(d));}
 		jittered=false
 	}
 	else{
-		xMap = function(d) { return xScale(xValue(d))+Math.random()*25;},
-		yMap = function(d) { return yScale(yValue(d))+Math.random()*25;}
+		xMap = function(d) { return xScale(xValue(d))+Math.random()*30;}
+		yMap = function(d) { return yScale(yValue(d))+Math.random()*30;}
 		jittered=true
 	}
 	d3.selectAll('circle') // move the circles
