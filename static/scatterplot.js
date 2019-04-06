@@ -54,6 +54,11 @@ var mouseleave = function(d,i) {
 var fields=NaN
 d3.csv('/static/data/cereal.csv')
     .then(function(data){
+	document.getElementById("Brand").addEventListener('change',function(e){
+		var selected=this.value.substring(0,1);
+		updatedata(selected)
+
+	})
 	fields=Object.keys(data[0]).slice(3,12)
 	for (var i=0;i<fields.length;i++) {
 	    (function(i){
@@ -81,11 +86,7 @@ d3.csv('/static/data/cereal.csv')
 	    //alert( d.calories )
 
 	});
-	document.getElementById("Brand").addEventListener('change',function(e){
-	    selected=["explicitOriginalTarget"].label.substring(0,1);
-	    sarr=data.filter(data["mfr"]==selected)
-	    console.log(sarr);
-	})
+
 
 	//edit domains
 	xScale.domain([d3.min(data, xValue) - 1, d3.max(data, xValue)+1]);
@@ -117,7 +118,7 @@ d3.csv('/static/data/cereal.csv')
 	    .attr("y", 4)
 	    .text("Protein (g)");
 	//add circles
-	var bubbles=svg.selectAll(".dot")
+	svg.selectAll(".dot")
 	    .data(data)
 	    .enter().append("circle")
 	    .attr("class", "dot")
@@ -194,4 +195,34 @@ function jitter(){
 		.delay(function (d,i) { return i*100})
 		.attr('cx',xMap)
 		.attr('cy',yMap);
+}
+function updatedata(selected){
+	d3.csv('/static/data/cereal.csv')
+    .then(function(data){
+	if (selected!=""){
+		data=data.filter(function(d){return d.mfr===selected;})
+	}
+	data.forEach(function(d) {
+	    d[activex] = +d[activex];
+	    d[activey] = +d[activey];
+	    //alert( d.calories )
+
+	});
+	console.log(data)
+	svg.selectAll(".dot")
+	.data(data)
+	.enter().append("circle")
+	.attr("class", "dot")
+	.attr("r", 6)
+	.attr("cx", xMap)
+	.attr("cy", yMap)
+	.attr('fill',function (d,i) { return colorScale(i) })
+	.style('stroke','black')
+	.style('opacity',0.8)
+	.on("mouseover", mouseover )
+	.on("mouseleave", mouseleave )
+	svg.selectAll(".dot")
+	.data(data)
+	.exit().remove();
+	})
 }
