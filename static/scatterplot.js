@@ -208,6 +208,8 @@ function updatedata(selected){
 	    //alert( d.calories )
 
 	});
+	xMap = function(d) { return xScale(xValue(d));},
+	yMap = function(d) { return yScale(yValue(d));}
 	console.log(data)
 	svg.selectAll(".dot")
 	.data(data)
@@ -221,6 +223,10 @@ function updatedata(selected){
 	.style('opacity',0.8)
 	.on("mouseover", mouseover )
 	.on("mouseleave", mouseleave )
+	d3.selectAll('circle') // move the circles
+	.transition()
+	.attr('cx',xMap)
+	.attr('cy',yMap)
 	svg.selectAll(".dot")
 	.data(data)
 	.exit().remove();

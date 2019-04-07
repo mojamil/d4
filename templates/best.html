@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">  
+<meta charset="utf-8">
+<style>
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+</style>
+<div class="container">
+    <h6>Composition of </h6>
+    <button id="avg" class="btn btn-outline-primary">The Average Cereal</button>
+    <button id="high" class="btn btn-outline-primary">The Average Highly Rated Cereal*</button>
+    <button id="mid" class="btn btn-outline-primary">The Average Average Cereal</button>
+    <button id="low" class="btn btn-outline-primary">The Average Low Rated Cereal</button>
+    <br>
+    <br>
+    <p>*Ratings based on healthiness</p>
+  </div>
+<svg width="960" height="500"></svg>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+    document.getElementById("avg").addEventListener("click",update)
+    document.getElementById("high").addEventListener("click",update)
+    document.getElementById("mid").addEventListener("click",update)
+    document.getElementById("low").addEventListener("click",update)
+    var labels=["Protein","Fat","Sodium","Fiber","Carbo","Sugars","Potass"]
+    var means=[]
+      d3.csv('/static/data/cereal.csv')
+      .then(function(data){
+        labels.forEach(l => {
+          var val=d3.mean(data, function(d) { return d[l]; })
+          if(l=="Sodium" || l=="Potass"){
+            val=val/1000
+          }
+          means.push(val);
+        });
+          var svg = d3.select("svg"),
+          width = svg.attr("width"),
+          height = svg.attr("height"),
+          radius = 250,
+          g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+          var color = d3.scaleOrdinal(["red","blue","green","yellow","orange","cyan","violet"]);
+
+          // Generate the pie
+          var pie = d3.pie();
+
+          // Generate the arcs
+          var arc = d3.arc()
+          .innerRadius(0)
+          .outerRadius(radius);
+          var label = d3.arc()
+          .outerRadius(radius)
+          .innerRadius(radius - 80);
+          //Generate groups
+          var arcs = g.selectAll("arc")
+          .data(pie(means))
+          .enter()
+          .append("g")
+          .attr("class", "arc")
+
+          //Draw arc paths
+          arcs.append("path")
+          .attr("fill", function(d, i) {
+          return color(i);
+          })
+          .attr("d", arc);
+          arcs.append("text")
+          .attr("transform", function(d) {
+          return "translate(" + label.centroid(d) + ")";
+          })
+          .text(function(d,i) { return labels[i]; });
+      });
+function update(){
+  if(this.id=="avg"){
+    
+  }
+}
+
+
+</script>

@@ -16,7 +16,7 @@ def cereal():
     return render_template("cereal.html")
 @app.route('/best')
 def best():
-    return render_template("index.html")
+    return render_template("best.html")
 
 @app.route('/histo')
 def histo():
