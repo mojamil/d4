@@ -13,6 +13,22 @@
 }
 
 </style>
+<nav class="navbar navbar-expand navbar-light bg-light" style="font-size:15px">
+    <div class="nav navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Scatter Plot</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/histo">Nutrient Distributions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/cereal">Cereal Comparison</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/best">Cereal Composition</a>
+      </li>
+    </div>
+</nav>
 <div class="container">
     <h6>Composition of </h6>
     <button id="avg" class="btn btn-outline-primary">The Average Cereal</button>
@@ -27,6 +43,19 @@
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
+    var svg = d3.select("svg"),
+    width = svg.attr("width"),
+    height = svg.attr("height"),
+    radius = 250,
+    g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    var arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+    var label = d3.arc()
+    .outerRadius(radius)
+    .innerRadius(radius - 80);
+    var color = d3.scaleOrdinal(["red","blue","green","yellow","orange","cyan","violet"]);
+    var pie = d3.pie();
     document.getElementById("avg").addEventListener("click",update)
     document.getElementById("high").addEventListener("click",update)
     document.getElementById("mid").addEventListener("click",update)
@@ -42,24 +71,12 @@
           }
           means.push(val);
         });
-          var svg = d3.select("svg"),
-          width = svg.attr("width"),
-          height = svg.attr("height"),
-          radius = 250,
-          g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-          var color = d3.scaleOrdinal(["red","blue","green","yellow","orange","cyan","violet"]);
 
           // Generate the pie
-          var pie = d3.pie();
+
 
           // Generate the arcs
-          var arc = d3.arc()
-          .innerRadius(0)
-          .outerRadius(radius);
-          var label = d3.arc()
-          .outerRadius(radius)
-          .innerRadius(radius - 80);
           //Generate groups
           var arcs = g.selectAll("arc")
           .data(pie(means))
@@ -80,9 +97,66 @@
           .text(function(d,i) { return labels[i]; });
       });
 function update(){
-  if(this.id=="avg"){
-    
-  }
+  var labels=["Protein","Fat","Sodium","Fiber","Carbo","Sugars","Potass"]
+  var means=[]
+  id=this.id
+    d3.csv('/static/data/cereal.csv')
+    .then(function(data){
+      datas=data.sort(function(a,b){
+        if(parseFloat(a.rating)<parseFloat(b.rating)){
+          return 1
+        }
+        else if(parseFloat(a.rating)==parseFloat(b.rating)){
+          return 0;
+        }
+        else{
+          return -1
+        }
+      })
+      var thirds=parseInt(datas.length/3)
+      console.log(thirds)
+      console.log(datas.slice(0,25));
+      if(this.id=="avg"){
+        
+      }
+      else if(id=="high"){
+        data=datas.slice(0,thirds);
+      }
+      else if(id=="mid"){
+        data=datas.slice(thirds,2*thirds);
+      }
+      else if(id=="low"){
+        data=datas.slice(2*thirds,3*thirds);
+      }
+      labels.forEach(l => {
+
+        var val=d3.mean(data, function(d) { return d[l]; })
+        if(l=="Sodium" || l=="Potass"){
+          val=val/1000
+        }
+        means.push(val);
+      });
+      //Generate groups
+      var arcs = g.selectAll("arc")
+      .data(pie(means))
+      .enter()
+      .append("g")
+      .attr("class", "arc")
+      //Draw arc paths
+      arcs.append("path")
+      .attr("fill", function(d, i) {
+      return color(i);
+      })
+      .attr("d", arc);
+      arcs.append("text")
+      .attr("transform", function(d) {
+      return "translate(" + label.centroid(d) + ")";
+      })
+      .text(function(d,i) { return labels[i]; });
+      svg.selectAll("arc")
+      .data(pie(means))
+      .exit().remove();
+    });
 }
 
 

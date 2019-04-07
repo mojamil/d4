@@ -20,7 +20,24 @@
   </style>
 </head>
 <body>
-<h5>X-Axis</h5>
+    <nav class="navbar navbar-expand navbar-light bg-light" style="font-size:15px">
+        <div class="nav navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Scatter Plot</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/histo">Nutrient Distributions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cereal">Cereal Comparison</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/best">Cereal Composition</a>
+          </li>
+        </div>
+    </nav>
+<div class="container">
+    <h5>X-Axis</h5>
     {% for field in fields %}
         {% if field=="Calories" %}
             <button id="{{field}}" class="btn btn-outline-primary">{{field}}</button>
@@ -28,6 +45,8 @@
             <button id="{{field}}" class="btn btn-outline-primary">{{field}}</button>
         {% endif %}
     {% endfor %}
+</div>
+
 </body>
 <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
 <script src="/static/bubble.js"></script>
