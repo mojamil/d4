@@ -14,7 +14,9 @@ def cereal():
     fields=data.readline().split(",")
     fields=fields[3:12]
     return render_template("cereal.html")
-
+@app.route('/best')
+def best():
+    return render_template("index.html")
 if __name__ == '__main__':
     app.debug = True
     app.run()
