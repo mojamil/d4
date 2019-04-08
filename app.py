@@ -10,10 +10,8 @@ def home():
 
 @app.route('/cereal')
 def cereal():
-    data=open("data/cereal.csv", "r")
-    fields=data.readline().split(",")
-    fields=fields[3:12]
     return render_template("cereal.html")
+    
 @app.route('/best')
 def best():
     return render_template("best.html")

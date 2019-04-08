@@ -1,5 +1,5 @@
-var width = 960,
-    height = 700,
+var width = 1100,
+    height = 900,
     radius = (Math.min(width, height) / 2) - 10;
 
 var formatNumber = d3.format(",d");
@@ -10,7 +10,7 @@ var x = d3.scaleLinear()
 var y = d3.scaleSqrt()
     .range([0, radius]);
 
-var color = d3.scaleOrdinal(d3.schemeCategory10);
+var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
 var partition = d3.partition();
 
@@ -20,29 +20,49 @@ var arc = d3.arc()
     .innerRadius(function(d) { return Math.max(0, y(d.y0)); })
     .outerRadius(function(d) { return Math.max(0, y(d.y1)); });
 
-
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
   .append("g")
     .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
+  
+var text,
+    path;
 
- d3.csv("/static/data/cereal.csv", function(error, root) {
-   if (error) throw error;
-   console.log(d.protein);
-    // root = d3.hierarchy(root);
-    // root.sum(function(d) { return d.protein; });
-    // svg.selectAll("path")
-    //   .data(partition(root).descendants())
-    // .enter().append("path")
-    //   .attr("d", arc)
-    //   .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); })
-    //   .on("click", click)
-    // .append("title")
-    //   .text(function(d) { return d.data.name + "\n" + formatNumber(d.value); });
+d3.json("/static/data/cereal.json", function(error, root) {
+
+  root = d3.hierarchy(root);
+  root.sum(function(d) { return d.size; });
+ 
+  svg.selectAll("path")
+        .data(partition(root).descendants())
+        .enter().append("g").attr("class", "node");
+  
+  path = svg.selectAll(".node")
+      .append("path")
+      .attr("d", arc)
+      .style("fill", function(d) { return color((d.children ? d : d.parent).data.name); })
+      .on("click", click);
+  
+  text = svg.selectAll(".node")
+       .append("text")
+          .attr("transform", function(d) { 
+             return "rotate(" + computeTextRotation(d) + ")"; 
+          })
+          .attr("x", function(d) { 
+             return y(d.y0); 
+          })
+          .attr("dx", "6") // margin
+          .attr("dy", ".35em") // vertical-align
+          .text(function(d) { 
+              return d.data.name === "root" ? "" : d.data.name
+          });
 });
 
 function click(d) {
+  //Hide text while Sunburst transitions
+  text.transition().attr("opacity", 0);
+  
   svg.transition()
       .duration(750)
       .tween("scale", function() {
@@ -52,7 +72,27 @@ function click(d) {
         return function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); };
       })
     .selectAll("path")
-      .attrTween("d", function(d) { return function() { return arc(d); }; });
+    .attrTween("d", function(d) { return function() { return arc(d); }; })
+    .on("end", function(e, i) {
+          // check if the animated element's data e lies within the visible angle span given in d
+          if (e.x0 >= d.x0 && e.x0 < d.x1) {
+              // get a selection of the associated text element
+              var arcText = d3.select(this.parentNode).select("text");
+              // fade in the text element and recalculate positions
+              arcText.transition().duration(750)
+                  .attr("opacity", 1)
+                  .attr("class", "visible")
+                  .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
+                  .attr("x", function(d) { return y(d.y0); })
+                  .text(function(d) { 
+                      return d.data.name === "root" ? "" : d.data.name
+                  });
+          }
+});
+}
+  
+function computeTextRotation(d) {
+  return (x((d.x0 + d.x1)/2) - Math.PI / 2) / Math.PI * 180;
 }
 
 d3.select(self.frameElement).style("height", height + "px");
